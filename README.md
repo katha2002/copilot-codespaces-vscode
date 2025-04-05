@@ -73,3 +73,49 @@ Get help: [Post in our discussion board](https://github.com/orgs/skills/discussi
 &copy; 2023 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
 
 </footer>
+import os
+import zipfile
+
+# Define paths
+project_root = "/mnt/data/katha_portfolio_zip"
+os.makedirs(project_root, exist_ok=True)
+
+# File paths to create in the ZIP
+files = {
+    "index.html": """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Katha - The Memorable Stories</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="root">React App will mount here</div>
+  <script src="app.js"></script>
+</body>
+</html>
+""",
+    "style.css": "/* Tailwind CSS included via CDN or build step */",
+    "app.js": "// Compiled React app bundle goes here",
+    "README.txt": "Deploy this folder's contents to your GoDaddy hosting (public_html)"
+}
+
+# Write each file into the directory
+for filename, content in files.items():
+    file_path = os.path.join(project_root, filename)
+    with open(file_path, "w") as f:
+        f.write(content)
+
+# Create the zip file
+zip_path = "/mnt/data/katha_portfolio_site.zip"
+with zipfile.ZipFile(zip_path, 'w') as zipf:
+    for foldername, _, filenames in os.walk(project_root):
+        for filename in filenames:
+            file_path = os.path.join(foldername, filename)
+            arcname = os.path.relpath(file_path, project_root)
+            zipf.write(file_path, arcname)
+
+zip_path
+
